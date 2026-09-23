@@ -27,9 +27,11 @@ The preferred conversion is:
 | `tsd.directory` | renamed files discovered by defaults, or an explicit `testFileMatch` glob |
 | `tsd.compilerOptions` | compiler options in a dedicated type-test TSConfig |
 
-Prefer renaming files over keeping the declaration-file suffix. Preserve the existing directory unless moving it has a concrete benefit; the migration does not authorize a broader layout refactor.
+Prefer renaming files over keeping the declaration-file suffix. Preserve the existing directory unless moving it has a concrete benefit; the migration does not authorize a broader layout refactor. Renaming the directory is optional: the default `testFileMatch` finds `*.tst.*` files anywhere, while the `__typetests__/` and `typetests/` patterns only add discovery for files named `*.test.*`.
 
 Give a dedicated type-test directory an isolated TSConfig that extends the project config, sets `noEmit`, and explicitly includes the tests. Prefer `strict: true` and `types: []`, but preserve an intentional old strictness setting and list any ambient type packages that are part of the tested contract. Carry across other intentional options from `tsd.compilerOptions`, including `lib`, `jsx`, module settings, path aliases, and decorators. Confirm the file is actually included: when TSTyche's default `findup` mode finds no TSConfig that includes a test, it falls back to baseline options.
+
+When tsd found no `tsconfig.json`, it compiled with its own defaults: `strict: true`, `jsx: react`, `target: es2020`, `lib: ["es2020", "dom", "dom.iterable"]`, `module: "commonjs"`, `esModuleInterop: true`, and `noUnusedLocals: false`. When a project tsconfig existed, tsd used it, but `moduleResolution` (derived from `module`) and `skipLibCheck: false` were forced and could not be overridden. Reproduce whichever environment was effective instead of assuming the project tsconfig tells the whole story, and expect new diagnostics where tsd's forcing suppressed them: a project tsconfig with `skipLibCheck: true` had no effect under tsd but applies under TSTyche.
 
 TSTyche's baseline is not tsd's default compiler configuration. Use `tstyche --showConfig` and the run header to confirm the compiler version and TSConfig selected for every layout.
 
@@ -42,7 +44,9 @@ TSTyche's baseline is not tsd's default compiler configuration. Use `tstyche --s
 | `tsd.compilerOptions` | dedicated TSConfig selected by discovery, `tsconfig`, or `--tsconfig` |
 | `--files` / `-f`, `testFiles` | `testFileMatch` plus positional search strings for focused runs |
 | project path / programmatic `cwd` | run in that workspace or use `--root`; pair with `--config` when config lives elsewhere |
-| `--typings` / `-t`, `typingsFile` | no direct flag; import the public entrypoint under test and ensure its declarations are included |
+| `--typings` / `-t`, `typingsFile` | no direct flag; import the entrypoint or the specific declaration file under test in each test file |
+
+tsd loaded the typings entrypoint automatically and failed when it was missing; TSTyche only checks what a test file imports. A migrated file that imports nothing from the project checks nothing, so make sure every converted test imports the entrypoint or the declaration file under test. Project-wide declaration errors still surface through `checkDeclarationFiles`, which defaults to `true`.
 
 Add `tstyche.json` only for intentional runner overrides. Use its installed schema and keep compiler options in TSConfig. `checkDeclarationFiles`, `checkSuppressedErrors`, `rejectAnyType`, and `rejectNeverType` default to `true`; new failures from those checks need review, not blanket disabling.
 
