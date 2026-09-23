@@ -1,7 +1,7 @@
 # TSTyche Agent Skills
 
 The TSTyche skills bundled in this repository help an AI agent work with TSTyche's type-test,
-project-setup, and programmatic-integration surfaces.
+project-setup, programmatic-integration, and tsd-migration surfaces.
 
 ## Skill map
 
@@ -11,6 +11,8 @@ project-setup, and programmatic-integration surfaces.
   environment, watch mode, templates, and CI.
 - `tstyche-programmatic-api`: `tstyche/tag`, `tstyche/api`, runners,
   reporters, events, results, cancellation, and embedded runs.
+- `tstyche-migrate-from-tsd`: dependency, file, assertion, configuration,
+  script, and CI migration from tsd, including unsupported-case detection.
 
 Each skill has a short `SKILL.md` entrypoint and focused Markdown references.
 

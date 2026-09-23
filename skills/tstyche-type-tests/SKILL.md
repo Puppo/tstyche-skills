@@ -1,6 +1,6 @@
 ---
 name: tstyche-type-tests
-description: Use when writing, reviewing, migrating, or debugging `.tst.*` files, TSTyche assertions or testing helpers, type-level API compatibility cases, or type-test failures.
+description: Use when writing, reviewing, or debugging `.tst.*` files, TSTyche assertions or testing helpers, type-level API compatibility cases, or type-test failures after TSTyche is already in use.
 ---
 
 # TSTyche type tests

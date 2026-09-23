@@ -7,10 +7,12 @@ one vendor's repository layout.
 
 ## Available skills
 
-- `tstyche-type-tests`: write, review, migrate, and debug TSTyche type tests.
+- `tstyche-type-tests`: write, review, and debug TSTyche type tests.
 - `tstyche-project-setup`: install, configure, run, and troubleshoot TSTyche.
 - `tstyche-programmatic-api`: use TSTyche entrypoints, runners, reporters,
   events, and results from JavaScript or TypeScript.
+- `tstyche-migrate-from-tsd`: migrate tsd tests, assertions, configuration,
+  scripts, and CI to TSTyche without losing test intent.
 
 See [skills/README.md](skills/README.md) for the skill map.
 
