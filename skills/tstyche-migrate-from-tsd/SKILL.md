@@ -9,7 +9,7 @@ Use this skill for a repository migration from `tsd` to TSTyche. Preserve the in
 
 ## Workflow
 
-1. Inventory the repository before editing. Find the package manager and workspace boundaries, the installed `tsd` and TypeScript versions, `tsd` imports, `.test-d.ts` and `.test-d.tsx` files, the `package.json#tsd` block, CLI flags, scripts, CI jobs, and any default `tsd()` or `formatter` imports. Run the existing type-test command and record whether it passes.
+1. Inventory the repository before editing. Find the package manager and workspace boundaries, the installed `tsd` and TypeScript versions, `tsd` imports, `.test-d.ts` and `.test-d.tsx` files, the `package.json#tsd` block, CLI flags, scripts, CI jobs, and any default `tsd` function or `formatter` imports. Run the existing type-test command and record whether it passes.
 2. Read the project migration reference. Check the selected TSTyche release's Node and TypeScript requirements against every affected package. Preserve the current package manager, script names, layout, and compiler behavior unless TSTyche requires a change.
 3. Add TSTyche while keeping `tsd` available for comparison. Rename type tests to `.tst.ts` or `.tst.tsx`, or intentionally configure `testFileMatch`. Give type tests a TSConfig that represents the old effective compiler options instead of accepting a silent change of defaults.
 4. Read the assertion mapping reference and convert every imported helper. Direct relation assertions can be translated systematically; inspect each `expectError` in context and choose the matcher that expresses the invalid operation. Do not remove an assertion that has no direct equivalent.
