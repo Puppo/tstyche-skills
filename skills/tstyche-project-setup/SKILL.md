@@ -30,3 +30,7 @@ Use this skill when adding TSTyche to a project, changing `tstyche.json` or TSCo
 - CLI, targets, store, and watch: [references/cli-and-versions.md](references/cli-and-versions.md)
 - Environment variables and precedence: [references/environment.md](references/environment.md)
 - Templates and CI: [references/templates-and-ci.md](references/templates-and-ci.md)
+
+## If something is wrong
+
+Diagnose first. When a run is selecting the wrong files or TypeScript version, the resolver is picking the wrong TSConfig, or an environment variable is involved, load [tstyche-troubleshooting](../tstyche-troubleshooting/SKILL.md) and start with [references/cli-and-config-failures.md](../tstyche-troubleshooting/references/cli-and-config-failures.md) or [references/environment-and-store.md](../tstyche-troubleshooting/references/environment-and-store.md). For fixture projects, CI matrices, and `// @tstyche template` authoring, load [tstyche-project-templates](../tstyche-project-templates/SKILL.md).
