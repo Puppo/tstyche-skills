@@ -1,15 +1,15 @@
 {
   "name": "tstyche-skills",
   "private": true,
-  "engines": {
-    "node": "24.x"
-  },
   "scripts": {
-    "validate:skills": "set -e; for skill in skills/*/; do echo \"Validating $skill\"; skills-ref validate \"$skill\"; done",
-    "validate:discovery": "skills add . --list"
+    "validate:discovery": "skills add . --list",
+    "validate:skills": "set -e; for skill in skills/*/; do echo \"Validating $skill\"; skills-ref validate \"$skill\"; done"
   },
   "devDependencies": {
     "skills": "1.6.0",
     "skills-ref": "0.1.5"
+  },
+  "engines": {
+    "node": "24.x"
   }
 }
