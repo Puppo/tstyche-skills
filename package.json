@@ -6,8 +6,8 @@
     "validate:skills": "set -e; for skill in skills/*/; do echo \"Validating $skill\"; skills-ref validate \"$skill\"; done"
   },
   "devDependencies": {
-    "skills": "1.6.0",
-    "skills-ref": "0.1.5"
+    "skills": "^1.7.0",
+    "skills-ref": "~0.1.5"
   },
   "engines": {
     "node": "24.x"
