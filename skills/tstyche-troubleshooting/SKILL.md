@@ -12,7 +12,7 @@ Use this skill when a TSTyche run, fixture, embedded integration, runner, or env
 1. Identify the subsystem that is wrong: type-test matcher, project layout/config, embedded runner, or environment/store. Match the subsystem to the right reference, then read only that file.
 2. Capture the smallest reproducer that fails: a single file, a single target, a single reporter, a single environment variable. Do not bisect inside a large test suite before the simplest input is isolated.
 3. Run the quickest diagnostic verb first: `--showConfig`, `--listFiles`, `--list`, `--version`. Most failures announce themselves in that output before a single assertion runs.
-4. Read the failure message as if it were typed: the error category (`error` from `DiagnosticCategory`), the path it points at, and the project TSConfig it resolved. `--showConfig` gives the config and the resolved TSConfig `uses TypeScript ... with ...` line in one invocation.
+4. Read the failure message as if it were typed: the error category (`error` from `DiagnosticCategory`), the path it points at, and the project TSConfig it resolved. `--showConfig` prints the resolved options; the test run prints the `uses TypeScript ... with ...` line.
 5. Only edit tests or config after the symptom text, the resolved config, and the failing assertion's source line are all known. Re-run after every change.
 
 ## Non-obvious failure modes

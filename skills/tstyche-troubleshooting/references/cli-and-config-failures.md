@@ -4,14 +4,14 @@ Use this file when a TSTyche run is selecting the wrong files, the wrong TypeScr
 
 ## First diagnostics
 
-- `--showConfig` prints the resolved configuration and the TSConfig `uses TypeScript ... with ...` line. Run it before any test command when behavior is unexpected.
+- `--showConfig` prints the resolved configuration, including `tsconfig` and `rootPath`. Run a test to see the `uses TypeScript ... with ...` line and confirm which TSConfig was selected.
 - `--listFiles` enumerates the files selected by `testFileMatch`, positional search, and any `--root`. Run it to confirm the runner is looking at the files the user thinks it is.
 - `--list` prints the supported TypeScript versions and selection status. Run it when a target is rejected as unsupported.
 - `--version` reports the installed TSTyche version. Pin the version in CI for reproducibility.
 
 ## File selection
 
-- `testFileMatch` and `fixtureFileMatch` are case-sensitive glob lists. Brace expansion is supported; the default globs include `**/*.tst.*`, `**/__typetests__/*.test.*`, and `**/typetests/*.test.*`. A `__typetests__/` directory with `.tst.ts` files inside is auto-selected; a custom directory requires an explicit pattern.
+- `testFileMatch` and `fixtureFileMatch` are case-insensitive glob lists. Brace expansion is supported; the default globs include `**/*.tst.*`, `**/__typetests__/*.test.*`, and `**/typetests/*.test.*`. A `__typetests__/` directory with `.tst.ts` files inside is auto-selected; a custom directory requires an explicit pattern.
 - Dot directories and `node_modules` are not selected by default. Add explicit patterns when tests live there.
 - Positional search strings are resolved relative to the effective `--root`. Once `--root` is set, the process working directory no longer drives selection.
 - `--only` and `--skip` filter literal helper names case-insensitively. `--skip` wins over `--only` when both select the same group.

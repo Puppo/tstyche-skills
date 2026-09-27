@@ -6,7 +6,7 @@ Use this file when authoring a `.tst.ts` whose default export is generated type-
 
 ```ts
 // @tstyche template
-export default function generate() {
+function generate() {
   return `import { expect, test } from "tstyche";
 
 test("smoke", () => {
@@ -14,9 +14,11 @@ test("smoke", () => {
 });
 `;
 }
+
+export default generate();
 ```
 
-The file's default export is a function (or a string constant). The function is invoked at test time; the function's output is the text analyzed as type-test source. Nothing else from the file is consumed.
+The file's default export must be a string. Here, the file calls `generate()` before exporting its output; TSTyche imports that string as the type-test source.
 
 ## Determinism
 

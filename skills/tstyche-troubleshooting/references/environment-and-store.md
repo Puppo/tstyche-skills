@@ -44,7 +44,7 @@ Use this file when a TSTyche run is fetching the wrong TypeScript version, hangi
 
 ## Common pitfalls
 
-- A test environment inherits `TSTYCHE_NO_COLOR=""` from a parent shell init file. The explicit-empty form still disables color; unset it explicitly when color is wanted.
+- A test environment inherits `TSTYCHE_NO_COLOR=""` from a parent shell init file. The explicit-empty form enables color and suppresses the `NO_COLOR` fallback; unset it when the fallback should apply.
 - A CI image caches the store but the cache key omits the target. The store then contains versions that no longer match the matrix; bump the cache key on every matrix change.
 - A test that asserts on color output never holds in CI when `TSTYCHE_NO_COLOR=1` is inherited. Assert on the textual output, not its color codes.
 - A watcher dies when `TSTYCHE_TYPESCRIPT_MODULE` points at a path that no longer exists. Re-run `--showConfig` after rotating the module path.

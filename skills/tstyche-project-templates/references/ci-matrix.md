@@ -58,7 +58,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: ["5.4", "5.8", ["latest"]]
+        target: ["5.4", "5.8", "latest"]
     env:
       TSTYCHE_STORE_PATH: ${{ runner.temp }}/tstyche-store
     steps:

@@ -4,21 +4,21 @@ Use this file when an embedded TSTyche integration rejects, exits unexpectedly, 
 
 ## Resolution contracts
 
-- `tstyche/tag` (default export) is a tagged-template function that resolves on a successful run and rejects with an `Error` whose message names the failing test file. Catch the rejection at the host boundary and preserve stdout/stderr if diagnostics are part of the assertion.
+- `tstyche/tag` (default export) is a tagged-template function that resolves on a successful run and rejects with a generic `Error` on failure. Read the streamed stdout/stderr to identify the failing test file, and capture those streams when diagnostics are part of the assertion.
 - `Runner.run` resolves after dispatching events, not after each test passes or fails. A passing event stream does not mean the overall run succeeded. Inspect events or wait for the runner's terminal event when an exit-code contract is required.
 - `Cli.run` returns an exit-code-like result suitable for process-style integration. Use it when a programmatic equivalent of the CLI exit code is required.
-- Call `Config.resolve(...)` rather than hand-writing a `ResolvedConfig`. The resolution logic handles defaults, `--config` files, environment variables, and CLI overrides; a partial resolved config bypasses precedence.
+- Parse command-line options with `Config.parseCommandLine(...)` and the config file with `Config.parseConfigFile(...)`, then pass both results to `Config.resolve(...)`. The resolver merges those options with defaults; it does not read the file or parse arguments itself.
 
 ## Cancellation
 
 - `Runner.run(files, cancellationToken)` accepts a `CancellationToken`. Without a token, the runner cannot be cancelled mid-flight.
-- Pass an `AbortSignal`-shaped token and propagate cancellation from the host test. Without it, a watcher will keep the process alive after the host completes.
-- For `tstyche/tag`, cancellation is propagated via the parent cancellation signal. Wrap the call in `AbortController` if the host needs a hard timeout.
+- Pass TSTyche's `CancellationToken` to `Runner.run` and call `token.cancel(CancellationReason.WatchClose)` during host teardown. The token is not an `AbortSignal`.
+- `tstyche/tag` does not accept a cancellation signal. Use `Cli.run(args, cancellationToken)` or `Runner.run(files, cancellationToken)` when the host needs cancellation.
 
 ## Watcher leakage
 
 - A watcher observes the filesystem through events. The async iterator returned by the watch run can keep Node's event loop busy after the host test is done.
-- Always tear down watchers explicitly. Either pass a `CancellationToken` and call `.cancel()` after the host test, or use the runner's terminal event to detach handlers.
+- Always tear down watchers explicitly. Pass a `CancellationToken` and cancel it during host teardown so the watch loop can finish; detaching event handlers alone does not stop a watcher.
 - Test for leak: run the embedded integration in a fixture, end the test, and assert that the process exits with `code 0` and no pending event handlers. A timer or file watcher still alive at that point is the leak.
 
 ## Reporter cleanup
