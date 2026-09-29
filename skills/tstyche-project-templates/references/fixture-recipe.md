@@ -13,7 +13,7 @@ fixture/
     smoke.tst.ts
 ```
 
-Five files. Every other file is a deliberate addition.
+Four authored files. Add a lockfile when the fixture installs dependencies in CI.
 
 ## `package.json`
 
@@ -26,13 +26,13 @@ Five files. Every other file is a deliberate addition.
     "test": "tstyche"
   },
   "devDependencies": {
-    "tstyche": "*",
-    "typescript": "*"
+    "tstyche": "7.2.5",
+    "typescript": "5.8.3"
   }
 }
 ```
 
-Pin `tstyche` to the version under test. Pin `typescript` only when the fixture must use a specific compiler version; otherwise the host's `tstyche --target` selection wins.
+These are the versions used to verify this example. Pin the versions your integration needs and commit the generated lockfile for reproducible installs. The host can still override the compiler selection with `--target`.
 
 ## `tstyche.json`
 
@@ -66,29 +66,31 @@ The schema reference gives editor validation. `target: "*"` lets the host pass `
 ```ts
 import { expect, test } from "tstyche";
 
-test("smoke: package is reachable", () => {
+test("smoke: TSTyche runs this fixture", () => {
   expect<string>().type.toBe<string>();
 });
 ```
 
-One assertion that always passes under any version TSTyche supports. Its purpose is to prove the fixture is wired correctly, not to test the host. A fixture that asserts something interesting is no longer minimal.
+This assertion proves that TSTyche selected and ran the fixture. It does not test a separate package; add an import and assertion for the package under test when that is the integration's purpose.
 
 ## Verification
 
 - `tstyche --root ./fixture --target 5.8` from the host succeeds and exits non-zero on any failure.
 - `tstyche --showConfig --root ./fixture` prints the resolved options. Run the fixture to see the `uses TypeScript ... with ...` line and confirm the selected TSConfig.
-- The host's `tstyche/tag` import resolves from the host module, while `--root` selects the fixture project. Verify the imported TSTyche version from the host and install the fixture dependencies before running it.
+- The host's `tstyche/api` import resolves from the host module, while `--root` selects the fixture project. Verify the host's TSTyche version and install the fixture dependencies before running it.
 
 ## Embedded host wiring
 
 ```ts
-import tstyche from "tstyche/tag";
+import { fileURLToPath } from "node:url";
+import { Cli } from "tstyche/api";
 
-const fixtureRoot = new URL("./fixture", import.meta.url);
-await tstyche`--quiet --root ${fixtureRoot} --target 5.8`;
+const root = fileURLToPath(new URL("./fixture/", import.meta.url));
+const exitCode = await new Cli().run(["--quiet", "--root", root, "--target", "5.8"]);
+if (exitCode !== 0) throw new Error(`TSTyche exited with code ${exitCode}`);
 ```
 
-`--quiet` lets the host own the output. Absolute `--root` avoids CWD drift between runs. `tstyche/tag` resolves on success and rejects on non-zero exit (including assertion failures), so wrap the call in a `try/catch` whose assertion checks both the rejection and the stderr capture when diagnostics matter.
+`--quiet` lets the host own normal output. `fileURLToPath` produces an absolute filesystem path, and the argument array preserves paths with spaces. `Cli.run` returns a nonzero code for failed tests; capture stderr as well when diagnostics matter.
 
 For `Runner`-based integrations, parse options and the fixture config before constructing the runner:
 
@@ -116,4 +118,4 @@ await new Runner(resolved).run([new URL("./fixture/__typetests__/smoke.tst.ts", 
 - Putting fixture tests in a shared `__tests__` directory. Production compilation can include them accidentally; a dedicated `__typetests__` is the recommended shape.
 - Including the fixture in the host's own `tsconfig.json`. Treatment as production code breaks the boundary.
 - Running the host with `npx tstyche` from a workspace that already has its own `tstyche`. Pin the fixture's install via `package.json` and `npm install` inside the fixture.
-- Sharing one fixture across matrix builders that each spawn their own child. Concurrent children race on the store; pass `TSTYCHE_STORE_PATH=/tmp/fixture-store-${pid}` so each child gets its own.
+- Sharing one fixture across matrix builders that each spawn their own child. Give each child its own store path, for example with Node's `mkdtemp(path.join(tmpdir(), "tstyche-store-"))`, then pass the returned path as `TSTYCHE_STORE_PATH`.

@@ -17,7 +17,7 @@ Use this skill when a TSTyche run, fixture, embedded integration, runner, or env
 
 ## Non-obvious failure modes
 
-- An symmetric matcher (`toBe`) fails when the user wanted an assignability matcher (`toBeAssignableFrom`, `toBeAssignableTo`). Choose the direction before changing the assertion.
+- A symmetric matcher (`toBe`) fails when the user wanted an assignability matcher (`toBeAssignableFrom`, `toBeAssignableTo`). Choose the direction before changing the assertion.
 - `rejectAnyType` or `rejectNeverType` silently blocks deliberate tests of `any` or `never`. The failure looks like an inverted matcher; the cause is the protection mask. Disable it intentionally rather than working around it.
 - A negative assertion passes accidentally because the source type was widened. Switch from `expect(expr)` to `expect<Type>()` to lock the input.
 - `// @tstyche if` placed below the assertion rather than above it is ordinary comment text; the gate never fires. Place the directive at the smallest scope that still covers the assert.

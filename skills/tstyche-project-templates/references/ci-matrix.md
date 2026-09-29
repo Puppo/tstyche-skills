@@ -15,16 +15,16 @@ Pick each independently. Most CI failures come from collapsing two of these into
 
 ## Versions
 
-- Run the supported minimum (`5.4`) and the latest stable. A two-version matrix catches the floor but not the latest drift.
+- Run the supported minimum (`5.4`) and the latest stable. A two-version matrix checks both endpoints but can miss regressions in intermediate minor versions.
 - Add every minor in between when the package promises full minor coverage. A range (`>=5.4`) sampled against the supported upper bound catches drift but runs longer.
-- Add `typescript@next` for early warnings only as a scheduled nightly. Pull-request runs should not depend on `next`; nightly failures can be triaged without blocking merges.
+- Add a prerelease target for early warnings only after `tstyche --list` confirms support. TypeScript 7 prerelease tags, including `next`, are currently unsupported; pull-request runs should use supported targets.
 - Stop the open-ended range at TSTyche's current supported upper bound (`6.0` at time of writing). Stale ranges silently drop new minors.
 
 ## Triggers
 
 - **Pull request**: one focused single-target (`latest`) per matrix. Fast, deterministic, low-noise; this is the run that gates merges.
 - **Push to main**: extend with the supported-minimum and the locally available latest. Slower but still in-band; failures block deploy but not necessarily rollback.
-- **Scheduled nightly**: full range plus `typescript@next`. Slow, generous timeouts, downstream or upstream noise tolerated.
+- **Scheduled nightly**: full supported range, with a prerelease target when TSTyche supports it. Allow more time and triage failures separately from the merge gate.
 - **Manual dispatch**: parameterized for ad hoc investigations. Accept an explicit `--target` and pin the build to one runner.
 
 Cache the store only on the scheduled and push runs. Pull-request runs should rebuild the store from the cache key on every run; otherwise PRs inherit a stale store from a previous matrix extension.
@@ -44,9 +44,9 @@ Cache the store only on the scheduled and push runs. Pull-request runs should re
 
 ## Failure handling
 
-- A matrix failure on `latest` only is treated as drift, not regression. Schedule a follow-up run to confirm the next minor.
+- A matrix failure on `latest` only needs investigation: compare a pinned latest patch with the previous passing patch to distinguish a package regression from a compiler change.
 - A matrix failure on `>=5.4` on the supported minimum usually indicates a package-side change. Bisect against pinned versions before declaring intent.
-- A matrix failure on `typescript@next` is informational. Update the supported upper bound in TSTyche, then close the loop with a manifest bump and a renewed range.
+- A prerelease target rejection may simply mean TSTyche does not support that compiler yet. Check `--list` before interpreting it as a package type regression.
 - A matrix failure introduced by an external store/network outage should be filtered at the host level. The increment is structural; the count is unreliable.
 
 ## GitHub Actions example
@@ -75,4 +75,4 @@ jobs:
 - Pinning the matrix to `latest` only. The package contract is never tested against anything else.
 - Using `--bare` instead of `--quiet` for host-suppressed output. TSTyche does not have `--bare`; `--quiet` is the flag.
 - Forgetting to bump the cache key when extending the matrix. Stale caches silently miss new versions until they're force-fetched.
-- Treating `typescript@next` failures as regressions. They are drift signals; route them to a nightly report rather than a merge block.
+- Treating an unsupported `next` target as a package regression. Keep prerelease checks informational until TSTyche supports that compiler and the package claims compatibility.

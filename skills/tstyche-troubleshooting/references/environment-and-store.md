@@ -37,9 +37,9 @@ Use this file when a TSTyche run is fetching the wrong TypeScript version, hangi
 - `TSTYCHE_TYPESCRIPT_MODULE` selects the active TypeScript implementation as a module or path specifier. The project-local TypeScript is the default; this variable is the escape hatch.
 - Use it when the project pins a TypeScript fork, monorepo path, or a vendored copy. Verify the resolution with `--showConfig`.
 
-## Color and interactivity precedence
+## Output controls
 
-- Explicit CLI flags beat environment variables when both exist. `--quiet`, `--verbose`, and reporters that suppress output all beat the environment setting.
+- `--quiet`, `--verbose`, and reporter selection control what TSTyche emits. They do not override `TSTYCHE_NO_COLOR` or `TSTYCHE_NO_INTERACTIVE` in the resolved environment.
 - When multiple variables describe the same setting, the more specific one wins (`TSTYCHE_NO_COLOR` over `NO_COLOR`).
 
 ## Common pitfalls

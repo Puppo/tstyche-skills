@@ -43,7 +43,7 @@ The file's default export must be a string. Here, the file calls `generate()` be
 ## When a template is wrong surface
 
 - Use a template when the matrix of similar cases is clearer than repeated handwritten tests. Three or four `.map(...)`-able cases is the threshold.
-- Do not use a template when materially different expectations would need to be hidden in string concatenation. The HIDden expectations cannot be discovered by code search and become maintenance debt.
+- Do not use a template when materially different expectations would need to be hidden in string concatenation. The hidden expectations cannot be discovered by code search and become maintenance debt.
 - Do not use a template when the input to the generator depends on filesystem state, network, or runtime. Templates are pure functions of their arguments.
 
 ## Validation workflow
@@ -55,7 +55,7 @@ The file's default export must be a string. Here, the file calls `generate()` be
 ## Common mistakes
 
 - Marking a file `// @tstyche template` while also exporting assertions. The directive says the default export is generated text; mixing the two confuses the runner.
-- Generating a file whose imports reference modules outside the test TSConfig. Set the TSConfig's `include` to cover the project's source so relative imports resolve.
+- Generating imports with incorrect relative paths or package specifiers. Check the emitted text from the generated file's location, then correct the specifier or the relevant module-resolution and path settings; `include` does not make an invalid import resolve.
 - Forgetting the `tstyche` import inside the generated output. The emitted text is a complete file, not a fragment.
 - Sorting by file-system order instead of by argument value. Use a stable sort key before emitting.
 - Generating test names with `Symbol`s or non-idempotent expressions. The runner may execute the same template twice in different matrix slots; a stable key prevents cross-runner state pollution.

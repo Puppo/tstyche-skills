@@ -11,7 +11,7 @@ Use this skill when authoring a fixture project (the smallest reproducible TSTyc
 
 - A **fixture project** is a minimal repo that another piece of code (a unit test, a build tool, an embedded `Runner`, or a `tstyche/tag` call) will run TSTyche against. It exists so the host code can test the TSTyche contract without depending on a real package.
 - A **CI matrix recipe** is the configuration of which TypeScript versions TSTyche tests against on which event (pull request, push to `main`, scheduled nightly). It is selected when a package promises compatibility across compiler minors.
-- A **template test file** is a `.tst.ts` whose default export is generated type-test text, marked with `// @tstyche template` at the top. The file is a generator; its content is the macro arguments, not the assertions.
+- A **template test file** is a `.tst.ts` marked with `// @tstyche template` at the top. Executable TypeScript in the file builds and default-exports a string of generated imports and assertions.
 
 ## Authoring workflow
 

@@ -42,5 +42,5 @@ Use this file when a TSTyche run is selecting the wrong files, the wrong TypeScr
 
 - A test passes locally with TypeScript `5.8` but fails in CI with a different version. The matrix needs to include the local version, or the test needs a version gate.
 - `--root` and the process CWD disagree. Selection paths resolve from `--root` once it is set. Either pass an absolute path or pair `--root` with an explicit `--config`.
-- A workspace uses a shared `tsconfig.base.json` that turns on JSX. Decorator tests fail when JSX is enabled or decorator options are not. Configure the test TSConfig to match the feature under test, not the workspace defaults.
-- A parent `tsconfig.json` includes the test directory. A dedicated test TSConfig with an explicit `include` and empty `exclude` keeps production compilation from picking up type-test files.
+- A workspace inherits decorator mode or options from a shared `tsconfig.base.json`. Check that the test TSConfig uses the decorator semantics expected by the library under test; JSX alone is not the cause.
+- A parent production `tsconfig.json` includes the test directory. Exclude type-test files from that production config or use a separate project/reference boundary; a dedicated test TSConfig does not change the parent's file selection.

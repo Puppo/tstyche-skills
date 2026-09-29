@@ -18,7 +18,7 @@ Use this file when a `.tst.*` assertion is failing, the matcher direction looks 
 ## Ability matchers
 
 - `toAcceptProps` requires a `.tsx` test, the `jsx` compiler option, and that the component type actually accepts JSX attributes. Passing an object literal only works when the component is typed as a JSX component; functions with object props do not implicitly accept `key`.
-- `toBeApplicable` requires decorator compiler options (`experimentalDecorators` plus `useDefineForClassFields`/`emitDecoratorMetadata` configuration that matches the library under test). Missing options produce a configuration error that looks like an assertion failure.
+- `toBeApplicable` checks a decorator applied to a class or class member. Standard decorator examples use `DecoratorContext` without `experimentalDecorators`; enable legacy decorator options only when the library under test uses legacy decorators.
 - `toBeCallableWith` and `toBeConstructableWith` accept argument lists as runtime expressions. The expression is analyzed but not executed; runtime setup belongs in a unit test.
 - `toBeInstantiableWith` receives a single tuple of generic arguments. `_` is `never` and fills required generics.
 - `toHaveProperty` checks property key existence with `string | number | symbol`. It does not validate the property's type; pair with a `toBe` on the resulting type if the type matters.

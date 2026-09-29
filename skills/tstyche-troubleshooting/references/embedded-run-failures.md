@@ -37,7 +37,7 @@ Use this file when an embedded TSTyche integration rejects, exits unexpectedly, 
 ## Failure paths
 
 - Configuration errors (`config:error`, `select:error`) emit as typed events. Handle them before any logical run event; otherwise the host assumes the run started.
-- A missing or unreadable config file rejects the run. Catch the rejection and assert on the message rather than the exit code.
+- A missing config file yields empty config-file options and TSTyche uses defaults. An existing file that cannot be read can reject; distinguish these cases before asserting on a failure.
 - A reporter that ignores the typed event union will accept payloads it cannot read. Narrow the event name before reading any field.
 - `Runner.run` on an empty `files` list succeeds without doing anything. Pass at least one `string`, `URL`, or `FileLocation` to make the run meaningful.
 
@@ -48,5 +48,5 @@ Use this file when an embedded TSTyche integration rejects, exits unexpectedly, 
 | Host test never exits | watch iterator alive, no cancellation token |
 | `Runner.run` resolves but tests failed | forgetting that success means dispatch, not pass |
 | Custom reporter ignored | default-export shape wrong, or `reporters` not pointing to the module |
-| Exit code from `tstyche/tag` is `0` on test failure | unwrapping the rejection at a different layer; catch at the host boundary |
+| `tstyche/tag` resolves despite an expected test failure | The selected files may not contain the failing assertion; verify selection with `--listFiles` and inspect the streamed diagnostics |
 | Concurrent fixtures corrupt the store | shared `TSTYCHE_STORE_PATH`, missing per-fixture override |
