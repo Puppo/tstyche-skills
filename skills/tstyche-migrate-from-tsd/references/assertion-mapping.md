@@ -12,7 +12,7 @@ Use this reference after inventorying all imports from `tsd`. The source express
 | `expectNotAssignable<T>(value)` | `expect(value).type.not.toBeAssignableTo<T>()` |
 | `expectNever(value)` | `expect(value).type.toBe<never>()` |
 
-For a type-only assertion, use `expect<Source>().type...` instead of manufacturing a runtime expression. Keep assignability direction unchanged: `expectAssignable<T>(value)` says the type of `value` is assignable **to** `T`. The equivalent target-first spelling, `expect<T>().type.toBeAssignableFrom(value)`, is valid but usually makes the subject less obvious.
+For a type-only assertion, use `expect<Source>().type...` instead of manufacturing a runtime expression. Keep the type under test as the subject and choose the matcher orientation that best expresses the relationship: `expect(value).type.toBeAssignableTo<T>()` and `expect<T>().type.toBeAssignableFrom(value)` are equivalent ways to assert that `value` is assignable to `T`. The `to`/`from` wording makes the direction explicit, so use whichever orientation keeps the test most readable.
 
 TSTyche's `toBe` performs structural type equality. Run the converted assertion rather than assuming every edge case has identical behavior to tsd's compiler-based identity check, especially for overloaded, conditional, inferred, `any`, and `never` types.
 
