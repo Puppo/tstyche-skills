@@ -5,7 +5,7 @@ Use this file when a TSTyche run is fetching the wrong TypeScript version, hangi
 ## Quick verification
 
 - `--showConfig` prints resolved environment options but not which raw variable or alias produced each value. Inspect the process environment when provenance matters.
-- `--list` shows fetched-by-TSTyche TypeScript versions and whether each is installed locally.
+- `--list` prints supported TypeScript versions and tag resolutions from the store manifest. Use it to check target support and tag resolution; it does not report whether compiler packages are installed locally.
 - `--prune` removes every fetched version in a single operation. Useful when the store has grown or is believed to be corrupted.
 - `--update` refreshes registry metadata without downloading. Run it before changing a target range so TSTyche knows about newly released minors.
 

@@ -34,7 +34,7 @@ Cache the store only on the scheduled and push runs. Pull-request runs should re
 - Inputs: `runner.os` + `tstyche-version` + `target-glob`. Re-key the cache whenever any of those change.
 - Path: a writable `TSTYCHE_STORE_PATH` rooted at the runner workspace, not at `~/.cache`. Some runners mount `~` read-only.
 - Restore keys: a partial match against the previous successful key. Acceptable when the partial restore misses recent additions.
-- Always run `--prune` before publishing a baseline image that bundles the store. Carry-over of unused versions inflates image size.
+- When rebuilding a baseline image that bundles the store, run `tstyche --prune` before populating it, then run `tstyche --fetch --target '<required targets>'` with the same `TSTYCHE_STORE_PATH`. Pruning deletes the entire store, including fetched compilers and metadata, and exits; fetch must be a separate command. Verify a type-test run against the required targets before publishing the image.
 
 ## Reporter and output
 

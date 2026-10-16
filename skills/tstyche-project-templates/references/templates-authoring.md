@@ -18,7 +18,7 @@ test("smoke", () => {
 export default generate();
 ```
 
-The file's default export must be a string. Here, the file calls `generate()` before exporting its output; TSTyche imports that string as the type-test source.
+The file's default export must be a string. Here, the file calls `generate()` before exporting its output; TSTyche dynamically imports the template file and reads that string as the type-test source. The template and its runtime imports must be executable by the chosen Node.js runtime; the selected TypeScript target does not transpile them for Node.js.
 
 ## Determinism
 
@@ -50,7 +50,8 @@ The file's default export must be a string. Here, the file calls `generate()` be
 
 1. Generate the output by calling the function with at least three input shapes: a small input, the canonical input, and a boundary input.
 2. For each generated output, save it to a temporary `.tst.ts` file and run `tstyche --target <each supported>` against it. Any failure here is a generation bug, not a test failure.
-3. Add the generation function's unit tests to the host test suite. They run independently of TSTyche and catch regressions before the template reaches TSTyche.
+3. Run TSTyche against the original template file under each supported Node.js version and TypeScript target. This checks that Node.js can import and execute the template, that its default export is a string, and that the generated tests run successfully. Testing only saved output bypasses template loading and can miss unsupported runtime syntax or failing imports.
+4. Add the generation function's unit tests to the host test suite. They run independently of TSTyche and catch regressions before the template reaches TSTyche.
 
 ## Common mistakes
 
